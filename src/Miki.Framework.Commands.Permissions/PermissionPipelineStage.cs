@@ -1,4 +1,5 @@
-﻿﻿using Miki.Framework.Models;
+﻿﻿using Miki.Framework.Hosting;
+ using Miki.Framework.Models;
 
  namespace Miki.Framework.Commands.Permissions
  {
@@ -107,16 +108,9 @@
         ///
         /// This stage requires you to already have set an Executable to work properly.
         /// </summary>
-		public static CommandPipelineBuilder UsePermissions(this CommandPipelineBuilder builder)
+		public static IBotApplicationBuilder UsePermissions(this IBotApplicationBuilder builder)
 		{
-            if(builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            builder.UseStage(
-                new PermissionPipelineStage(
-                    builder.Services.GetRequiredService<PermissionService>()));
+            builder.Use<PermissionPipelineStage>();
 			return builder;
 		}
 	}

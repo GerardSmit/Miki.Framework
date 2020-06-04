@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Miki.Framework.Commands\Miki.Framework.Commands.csproj" />
+      <ProjectReference Include="..\Miki.Framework\Miki.Framework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="TwitchLib" Version="3.1.1" />
+    </ItemGroup>
+
+</Project>

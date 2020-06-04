@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miki.Framework.Sandbox", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miki.Framework.Discord", "Miki.Framework.Discord\Miki.Framework.Discord.csproj", "{69ED91BB-1E32-4C96-8678-4E23CCDECD47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miki.Framework.Twitch", "Miki.Framework.Twitch\Miki.Framework.Twitch.csproj", "{21BED64D-E41E-4C73-A15A-BE098F841779}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Production|Any CPU = Debug Production|Any CPU
@@ -143,6 +145,14 @@ Global
 		{69ED91BB-1E32-4C96-8678-4E23CCDECD47}.Prod|Any CPU.Build.0 = Debug|Any CPU
 		{69ED91BB-1E32-4C96-8678-4E23CCDECD47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69ED91BB-1E32-4C96-8678-4E23CCDECD47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Debug Production|Any CPU.ActiveCfg = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Debug Production|Any CPU.Build.0 = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Prod|Any CPU.ActiveCfg = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Prod|Any CPU.Build.0 = Debug|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21BED64D-E41E-4C73-A15A-BE098F841779}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,6 +9,7 @@ using Miki.Framework.Commands.Filters;
 using Miki.Framework.Commands.Prefixes;
 using Miki.Framework.Commands.Stages;
 using Miki.Framework.Discord;
+using Miki.Framework.Twitch.Extensions;
 using Miki.Serialization;
 using Miki.Serialization.MsgPack;
 
@@ -22,6 +23,8 @@ namespace Miki.Framework.Sandbox
                 .ConfigureServices(services =>
                 {
                     services.AddDiscord(Environment.GetEnvironmentVariable("DISCORD_TOKEN"));
+                    services.AddTwitch("NoContent", "NoContentBot", "oauth:1sa24yuew21kcrfq1hszra7cpakrxf");
+                    
                     services.AddSingleton<ISerializer, MsgPackSerializer>();
                     services.AddSingleton<IExtendedCacheClient, InMemoryCacheClient>();
 
@@ -34,7 +37,7 @@ namespace Miki.Framework.Sandbox
                 })
                 .ConfigureBot(app =>
                 {
-                    app.UsePrefix();
+                    app.UsePrefixes();
                     app.UseFilters<BotFilter>();
                     
                     app.Run(async context =>

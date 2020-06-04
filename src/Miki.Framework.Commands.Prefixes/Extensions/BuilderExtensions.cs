@@ -8,11 +8,6 @@ namespace Miki.Framework.Commands.Prefixes
 {
     public static class BuilderExtensions
     {
-        public static IBotApplicationBuilder UsePrefix(this IBotApplicationBuilder app)
-        {
-            return app.Use<PipelineStageTrigger>();
-        }
-
         public static PrefixCollectionBuilder AddDynamic(this PrefixCollectionBuilder builder, string prefix, bool isDefault = false)
         {
             return builder.Add(new DynamicPrefixTrigger(prefix), isDefault);

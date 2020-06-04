@@ -1,4 +1,5 @@
-﻿using Miki.Framework.Models;
+﻿using Miki.Framework.Hosting;
+using Miki.Framework.Models;
 
 namespace Miki.Framework.Commands.States
 {
@@ -149,15 +150,15 @@ namespace Miki.Framework.Commands
 
     public static class Extensions
     {
-        public static CommandPipelineBuilder UseStates(
-            this CommandPipelineBuilder builder, 
+        public static IBotApplicationBuilder UseStates(
+            this IBotApplicationBuilder builder, 
             StatePipelineStage.StateConfiguration config = null)
         {
-            if(config == null)
+            if (config == null)
             {
                 config = new StatePipelineStage.StateConfiguration();
             }
-            return builder.UseStage(new StatePipelineStage(config));
+            return builder.Use(new StatePipelineStage(config));
         }
     }
 }

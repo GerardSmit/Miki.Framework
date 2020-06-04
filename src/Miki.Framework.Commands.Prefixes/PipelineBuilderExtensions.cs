@@ -1,4 +1,6 @@
-﻿namespace Miki.Framework.Commands
+﻿using Miki.Framework.Hosting;
+
+namespace Miki.Framework.Commands
 {
     using Miki.Framework.Commands.Prefixes;
     using Microsoft.Extensions.DependencyInjection;
@@ -7,12 +9,10 @@
     {
         public const string PrefixMatchKey = "prefix-match";
 
-        public static CommandPipelineBuilder UsePrefixes(
-            this CommandPipelineBuilder builder)
+        public static IBotApplicationBuilder UsePrefixes(
+            this IBotApplicationBuilder builder)
         {
-            return builder.UseStage(
-                new PipelineStageTrigger(
-                    builder.Services.GetService<IPrefixService>()));
+            return builder.Use<PipelineStageTrigger>();
         }
 
         public static string GetPrefixMatch(this IContext e)

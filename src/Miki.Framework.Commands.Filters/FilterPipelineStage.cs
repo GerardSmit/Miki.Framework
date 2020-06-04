@@ -1,4 +1,5 @@
-﻿using Miki.Framework.Models;
+﻿using Miki.Framework.Hosting;
+using Miki.Framework.Models;
 
 namespace Miki.Framework.Commands.Filters
 {
@@ -47,11 +48,11 @@ namespace Miki.Framework.Commands
 
     public static class Extensions
 	{
-		public static CommandPipelineBuilder UseFilter(this CommandPipelineBuilder b, IFilter f)
+		public static IBotApplicationBuilder UseFilter(this IBotApplicationBuilder b, IFilter f)
 			=> b.UseFilters(f);
 
-		public static CommandPipelineBuilder UseFilters(
-            this CommandPipelineBuilder b, params IFilter[] filters)
-			=> b.UseStage(new FilterPipelineStage(filters));
+		public static IBotApplicationBuilder UseFilters(
+            this IBotApplicationBuilder b, params IFilter[] filters)
+			=> b.Use(new FilterPipelineStage(filters));
 	}
 }

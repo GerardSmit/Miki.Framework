@@ -1,4 +1,5 @@
-﻿using Miki.Framework.Models;
+﻿using Miki.Framework.Hosting;
+using Miki.Framework.Models;
 
 namespace Miki.Framework.Commands.Pipelines
 {
@@ -58,18 +59,19 @@ namespace Miki.Framework.Commands
 		/// <summary>
 		/// Allows you to use FIFO-like argument readers. Used in other packages as a dependency.
 		/// </summary>
-		public static CommandPipelineBuilder UseArgumentPack(this CommandPipelineBuilder builder)
+		public static IBotApplicationBuilder UseArgumentPack(this IBotApplicationBuilder builder)
 		{
-			return builder.UseStage(new ArgumentPackBuilder());
+			return builder.Use<ArgumentPackBuilder>();
 		}
+		
         /// <summary>
         /// Allows you to use FIFO-like argument readers. Used in other packages as a dependency. With 
         /// non-default providers if you prefer overriding default implementation.
         /// </summary>
-		public static CommandPipelineBuilder UseArgumentPack(
-           this CommandPipelineBuilder builder, ArgumentParseProvider provider)
+		public static IBotApplicationBuilder UseArgumentPack(
+           this IBotApplicationBuilder builder, ArgumentParseProvider provider)
 		{
-			return builder.UseStage(new ArgumentPackBuilder(provider));
+			return builder.Use(new ArgumentPackBuilder(provider));
 		}
 	}
 }

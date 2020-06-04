@@ -1,4 +1,5 @@
 ﻿
+using Miki.Framework.Hosting;
 using Miki.Framework.Models;
 
 namespace Miki.Framework.Commands.Scopes
@@ -64,10 +65,9 @@ namespace Miki.Framework.Commands
         /// Enable the feature to create feature-flag like scopes to allow specific users to specific
         /// commands.
         /// </summary>
-        public static CommandPipelineBuilder UseScopes(this CommandPipelineBuilder builder)
+        public static IBotApplicationBuilder UseScopes(this IBotApplicationBuilder builder)
 		{
-            return builder.UseStage(
-                new ScopePipelineStage(builder.Services.GetService<ScopeService>()));
+            return builder.Use<ScopePipelineStage>();
 		}
 	}
 }

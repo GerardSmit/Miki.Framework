@@ -1,4 +1,6 @@
 ﻿
+using Miki.Framework.Hosting;
+
 namespace Miki.Framework.Commands
 {
     using Microsoft.Extensions.DependencyInjection;
@@ -7,12 +9,10 @@ namespace Miki.Framework.Commands
 
     public static class ContextExtensions
     {
-        public static CommandPipelineBuilder UseLocalization(
-            this CommandPipelineBuilder builder)
+        public static IBotApplicationBuilder UseLocalization(
+            this IBotApplicationBuilder builder)
         {
-            return builder.UseStage(
-                new LocalizationPipelineStage(
-                    builder.Services.GetRequiredService<ILocalizationService>()));
+            return builder.Use<LocalizationPipelineStage>();
         }
 
         public static Locale GetLocale(this IContext context)
