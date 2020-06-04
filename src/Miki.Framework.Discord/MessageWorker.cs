@@ -1,6 +1,7 @@
-﻿namespace Miki.Framework
+﻿using Miki.Discord.Common;
+
+namespace Miki.Framework
 {
-    using Discord.Common;
     using Logging;
     using System;
     using System.Collections.Concurrent;
@@ -9,33 +10,20 @@
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Miki.Discord.Common.Arguments;
 
-    /// <summary>
-    /// Message reference to use while a message is being queued to 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IMessageReference<T>
-        where T : class
-	{
-        List<Func<T, Task>> Decorators { get; }
 
-        MessageBucketArgs Arguments { get; }
-
-        void PushDecorator(Func<T, Task> fn);
-	}
-
-	public class MessageBucketArgs
-	{
+    public class MessageBucketArgs
+    {
         public Stream Attachment { get; set; }
-		public MessageArgs Properties { get; set; }
-		public IDiscordTextChannel Channel { get; set; }
-	}
-
-	public class MessageReference : IMessageReference<IDiscordMessage>
+        public MessageArgs Properties { get; set; }
+        public IDiscordTextChannel Channel { get; set; }
+    }
+    
+	public class MessageReference : IMessageReference<IDiscordMessage, MessageBucketArgs>
 	{
-		public List<Func<IDiscordMessage, Task>> Decorators  { get; } 
+		public List<Func<IDiscordMessage, Task>> Decorators { get; }
             = new List<Func<IDiscordMessage, Task>>();
+        
         public MessageBucketArgs Arguments { get; }
 
         public MessageReference(MessageBucketArgs args)
@@ -49,10 +37,10 @@
 		}
 	}
 
-    public class MessageWorker : IMessageWorker<IDiscordMessage>
+    public class MessageWorker : IMessageWorker<IDiscordMessage, MessageBucketArgs>
 	{
-		private static readonly ConcurrentQueue<IMessageReference<IDiscordMessage>> QueuedMessages 
-            = new ConcurrentQueue<IMessageReference<IDiscordMessage>>();
+		private static readonly ConcurrentQueue<IMessageReference<IDiscordMessage, MessageBucketArgs>> QueuedMessages 
+            = new ConcurrentQueue<IMessageReference<IDiscordMessage, MessageBucketArgs>>();
 
         private readonly ConfiguredTaskAwaitable workerTask;
 
@@ -86,7 +74,7 @@
 					continue;
 				}
 
-				if(QueuedMessages.TryDequeue(out IMessageReference<IDiscordMessage> msg))
+				if(QueuedMessages.TryDequeue(out IMessageReference<IDiscordMessage, MessageBucketArgs> msg))
 				{
                     try
                     {
@@ -121,7 +109,7 @@
 		}
 
         private static async Task ProcessDecoratorsAsync(
-            IMessageReference<IDiscordMessage> msgRef,
+            IMessageReference<IDiscordMessage, MessageBucketArgs> msgRef,
             IDiscordMessage msg)
         {
             foreach(var x in msgRef.Decorators)
@@ -131,7 +119,7 @@
         }
 
         /// <inheritdoc />
-        public IMessageReference<IDiscordMessage> CreateRef(MessageBucketArgs args)
+        public IMessageReference<IDiscordMessage, MessageBucketArgs> CreateRef(MessageBucketArgs args)
         {
             if (args == null)
             {
@@ -141,23 +129,9 @@
         }
 
         /// <inheritdoc />
-        public void Execute(IMessageReference<IDiscordMessage> args)
+        public void Execute(IMessageReference<IDiscordMessage, MessageBucketArgs> args)
         {
             QueuedMessages.Enqueue(args);
         }
-    }
-
-    public interface IMessageWorker<T>
-        where T : class
-    {
-        /// <summary>
-        /// Creates a reference to queue in the worker in the future.
-        /// </summary>
-        IMessageReference<T> CreateRef(MessageBucketArgs args);
-        
-        /// <summary>
-        /// Queues a reference in the worker.
-        /// </summary>
-        void Execute(IMessageReference<T> args);
     }
 }

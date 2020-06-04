@@ -182,7 +182,7 @@
             Chainable pipeline stage which mutates and moves forward to the next stage.
             </summary>
         </member>
-        <member name="M:Miki.Framework.Commands.Pipelines.IPipelineStage.CheckAsync(Miki.Discord.Common.IDiscordMessage,Miki.Framework.IMutableContext,System.Func{System.Threading.Tasks.ValueTask})">
+        <member name="M:Miki.Framework.Commands.Pipelines.IPipelineStage.CheckAsync(Miki.Discord.Common.IDiscordMessage,Miki.Framework.IContext,System.Func{System.Threading.Tasks.ValueTask})">
             <summary>
             Executes and handles edge cases.
             </summary>
@@ -207,7 +207,7 @@
             non-default providers if you prefer overriding default implementation.
             </summary>
         </member>
-        <member name="M:Miki.Framework.Commands.Pipelines.ArgumentPackBuilder.CheckAsync(Miki.Discord.Common.IDiscordMessage,Miki.Framework.IMutableContext,System.Func{System.Threading.Tasks.ValueTask})">
+        <member name="M:Miki.Framework.Commands.Pipelines.ArgumentPackBuilder.CheckAsync(Miki.Discord.Common.IDiscordMessage,Miki.Framework.IContext,System.Func{System.Threading.Tasks.ValueTask})">
             <inheritdoc/>
         </member>
         <member name="T:Miki.Framework.Commands.ArgumentPackCommandPipelineExtensions">
@@ -246,7 +246,7 @@
             Mutable version of the query.
             </summary>
         </member>
-        <member name="M:Miki.Framework.CorePipelineStageExtensions.SetQuery(Miki.Framework.IMutableContext,System.String)">
+        <member name="M:Miki.Framework.CorePipelineStageExtensions.SetQuery(Miki.Framework.IContext,System.String)">
             <summary>
             Sets the query.
             </summary>

@@ -1,31 +1,36 @@
-﻿namespace Miki.Framework
+﻿using Miki.Discord.Common;
+
+namespace Miki.Framework
 {
     using System;
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
     using Common.Builders;
-    using Discord;
-    using Discord.Common;
     using Framework;
-    using Microsoft.Extensions.DependencyInjection;
-    using Miki.Discord.Common.Arguments;
 
     /// <summary>
     /// Extension methods for Miki.Discord
     /// </summary>
     public static class DiscordExtensions
     {
+        public static IMessageReference<TMessage, TArgs> Then<TMessage, TArgs>(this IMessageReference<TMessage, TArgs> reference, Func<TMessage, Task> fn)
+            where TMessage : class
+        {
+            reference.PushDecorator(fn);
+            return reference;
+        }
+        
         public static Task QueueAsync(
             this DiscordEmbed embed,
             IContext context,
             IDiscordTextChannel channel,
             string content = "",
-            Func<IMessageReference<IDiscordMessage>, IMessageReference<IDiscordMessage>> modifier = null)
+            Func<IMessageReference<IDiscordMessage, MessageBucketArgs>, IMessageReference<IDiscordMessage, MessageBucketArgs>> modifier = null)
         {
             return QueueAsync(
                 embed,
-                context.GetService<IMessageWorker<IDiscordMessage>>(),
+                context.GetService<IMessageWorker<IDiscordMessage, MessageBucketArgs>>(),
                 channel,
                 content,
                 modifier);
@@ -33,10 +38,10 @@
 
         public static Task QueueAsync(
             this DiscordEmbed embed,
-            IMessageWorker<IDiscordMessage> worker,
+            IMessageWorker<IDiscordMessage, MessageBucketArgs> worker,
             IDiscordTextChannel channel,
             string content = "",
-            Func<IMessageReference<IDiscordMessage>, IMessageReference<IDiscordMessage>> modifier = null)
+            Func<IMessageReference<IDiscordMessage, MessageBucketArgs>, IMessageReference<IDiscordMessage, MessageBucketArgs>> modifier = null)
         {
             /*var currentUser = await client.GetSelfAsync();
             var currentGuildUser = await guildChannel.GetUserAsync(currentUser.Id);
@@ -63,8 +68,8 @@
             return Task.CompletedTask;
         }
 
-        public static IMessageReference<T> ThenWait<T>(this IMessageReference<T> reference, int milliseconds)
-            where T : class
+        public static IMessageReference<TMessage> ThenWait<TMessage>(this IMessageReference<TMessage> reference, int milliseconds)
+            where TMessage : class
         {
             reference.PushDecorator(_ => Task.Delay(milliseconds));
             return reference;
@@ -83,13 +88,6 @@
         {
             reference.PushDecorator(x
                 => x.EditAsync(new EditMessageArgs(message, embed)));
-            return reference;
-        }
-
-        public static IMessageReference<T> Then<T>(this IMessageReference<T> reference, Func<T, Task> fn)
-            where T : class
-        {
-            reference.PushDecorator(fn);
             return reference;
         }
 
@@ -161,19 +159,19 @@
             DiscordEmbed embed = null,
             string message = "",
             Stream stream = null,
-            Func<IMessageReference<IDiscordMessage>, IMessageReference<IDiscordMessage>> modifier = null)
+            Func<IMessageReference<IDiscordMessage, MessageBucketArgs>, IMessageReference<IDiscordMessage, MessageBucketArgs>> modifier = null)
         {
-            var worker = context.GetService<IMessageWorker<IDiscordMessage>>();
+            var worker = context.GetService<IMessageWorker<IDiscordMessage, MessageBucketArgs>>();
             QueueMessage(channel, worker, embed, message, stream, modifier);
         }
 
         public static void QueueMessage(
             this IDiscordTextChannel channel,
-            IMessageWorker<IDiscordMessage> worker,
+            IMessageWorker<IDiscordMessage, MessageBucketArgs> worker,
             DiscordEmbed embed = null,
             string message = "",
             Stream stream = null,
-            Func<IMessageReference<IDiscordMessage>, IMessageReference<IDiscordMessage>> modifier = null)
+            Func<IMessageReference<IDiscordMessage, MessageBucketArgs>, IMessageReference<IDiscordMessage, MessageBucketArgs>> modifier = null)
         {
             if(worker == null)
             {

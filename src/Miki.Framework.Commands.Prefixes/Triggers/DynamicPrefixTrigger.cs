@@ -3,7 +3,6 @@
     using System;
     using System.Threading.Tasks;
     using Miki.Cache;
-    using Miki.Discord.Common.Models;
     using Miki.Framework.Commands.Prefixes.Models;
     using Miki.Patterns.Repositories;
 
@@ -18,7 +17,7 @@
 			DefaultValue = value;
         }
 
-        private string GetCacheKey(ulong id)
+        private static string GetCacheKey(ulong id)
 			=> $"framework:prefix:{id}";
 
         public async Task ChangeForGuildAsync(
@@ -90,13 +89,14 @@
 			}
 
 			var prefix = DefaultValue;
-			if(message is IDiscordGuildMessage c)
-            {
-                prefix = await GetForGuildAsync(
-                    e.GetService<IUnitOfWork>(),
-                    e.GetService<ICacheClient>(), 
-                    c.GuildId);
-            }
+			// TODO (GerardSmit): Refactor this.
+			// if(message is IDiscordGuildMessage c)
+   //          {
+   //              prefix = await GetForGuildAsync(
+   //                  e.GetService<IUnitOfWork>(),
+   //                  e.GetService<ICacheClient>(), 
+   //                  c.GuildId);
+   //          }
 
 			var query = e.GetQuery();
 			if(!query.StartsWith(prefix))

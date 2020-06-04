@@ -1,8 +1,9 @@
-﻿namespace Miki.Framework.Commands.Prefixes
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Prefixes
 {
     using System;
     using System.Threading.Tasks;
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using Miki.Logging;
 
@@ -15,7 +16,7 @@
             this.service = service;
         }
 
-        public async ValueTask CheckAsync(IDiscordMessage msg, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage msg, IContext e, Func<ValueTask> next)
         {
             var result = await service.MatchAsync(e);
             if(result == null)

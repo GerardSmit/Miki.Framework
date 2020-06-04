@@ -1,6 +1,7 @@
-﻿namespace Miki.Framework.Commands.Localization
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Localization
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using Miki.Localization;
     using System;
@@ -18,13 +19,14 @@
             this.service = service;
         }
 
-        public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
         {
-            var channel = e.GetChannel();
+            var channel = await e.Message.GetChannelAsync();
             
-            if(channel is IDiscordGuildChannel)
+            // TODO (GerardSmit): In Twitch the ID is the channel name. The ILocalizationService should accept a string instead of a long.
+            if (long.TryParse(channel.Id, out var id))
             {
-                var locale = await service.GetLocaleAsync((long)channel.Id);
+                var locale = await service.GetLocaleAsync(id);
                 e.SetContext(LocaleContextKey, locale);
             }
             else

@@ -4,6 +4,8 @@
 
     public interface IChannel
     {
+        string Id { get; }
+        
         Task<IMessage> CreateMessageAsync(string content);
     }
 }

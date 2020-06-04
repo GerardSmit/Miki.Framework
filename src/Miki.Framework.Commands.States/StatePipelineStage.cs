@@ -1,7 +1,8 @@
-﻿namespace Miki.Framework.Commands.States
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.States
 {
     using Microsoft.EntityFrameworkCore;
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using Miki.Framework.Commands.States;
     using Miki.Logging;
@@ -25,7 +26,7 @@
             this.config = config;
         }
 
-        public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
         {
             if (e.Executable == null)
             {
@@ -48,7 +49,8 @@
             var state = await GetCommandStateAsync(
                 dbContext,
                 commandId,
-                (long)data.ChannelId);
+                data.ChannelId,
+                data.Platform.Id);
             if(!state.State)
             {
                 throw new Exception("State was denied");
@@ -60,7 +62,8 @@
         public async Task<CommandState> GetCommandStateAsync(
             DbContext context, 
             string commandId, 
-            long channelId)
+            string channelId,
+            string platformId)
         {
             if(string.IsNullOrWhiteSpace(commandId))
             {
@@ -76,7 +79,8 @@
 
             var state = await set.SingleOrDefaultAsync(
                 x => x.Name == commandId
-                && x.ChannelId == channelId);
+                && x.ChannelId == channelId
+                && x.PlatformId == platformId);
             if (state == null)
             {
                 var entity = await context.AddAsync(new CommandState()
@@ -101,8 +105,9 @@
         /// <seealso cref="CommandState"/>
         public async Task SetCommandStateAsync(
             DbContext context, 
-            long channelId,
+            string channelId,
             string commandId,
+            string platformId,
             bool newValue)
         {
             DbSet<CommandState> set = context.Set<CommandState>();
@@ -114,7 +119,8 @@
 
             var newState = await set.SingleOrDefaultAsync(
                 x => x.Name == commandId
-                && x.ChannelId == channelId);
+                && x.ChannelId == channelId
+                && x.PlatformId == platformId);
             if (newState == null)
             {
                 var entity = await set.AddAsync(new CommandState

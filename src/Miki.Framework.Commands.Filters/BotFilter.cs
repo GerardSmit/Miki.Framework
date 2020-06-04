@@ -7,9 +7,11 @@
 	public class BotFilter : IFilter
 	{
         /// <inheritdoc/>
-		public ValueTask<bool> CheckAsync(IContext e)
-		{
-			return new ValueTask<bool>(!e.GetMessage().Author.IsBot);
+		public async ValueTask<bool> CheckAsync(IContext e)
+        {
+	        var author = await e.Message.GetAuthorAsync();
+			
+			return !author.IsBot;
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace Miki.Framework.Commands.Scopes
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Scopes
 {
     using System;
     using System.Collections.Generic;
@@ -45,7 +47,13 @@
             await context.CommitAsync().ConfigureAwait(false);
         }
 
-        public async ValueTask<bool> HasScopeAsync(long userId, IEnumerable<string> scopeNames)
+
+        public ValueTask<bool> HasScopeAsync(IUser user, IEnumerable<string> scopeNames)
+        {
+            return HasScopeAsync(user.Platform.Id, user.Id, scopeNames);
+        }
+
+        public async ValueTask<bool> HasScopeAsync(string platformId, string userId, IEnumerable<string> scopeNames)
         {
             if(scopeNames == null)
             {
@@ -59,7 +67,7 @@
             }
 
             var scopeQuery = (await repository.ListAsync())
-                .Where(x => x.UserId == userId && validNames.Contains(x.ScopeId));
+                .Where(x => x.UserId == userId && x.PlatformId == platformId && validNames.Contains(x.ScopeId));
             if(!(scopeQuery is IQueryable<Scope> queryable))
             {
                 return scopeQuery.ToList().Count == validNames.Count;

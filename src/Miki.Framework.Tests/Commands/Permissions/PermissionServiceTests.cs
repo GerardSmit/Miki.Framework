@@ -9,10 +9,11 @@ namespace Miki.Framework.Tests.Commands.Permissions
 
     public class PermissionServiceTests : BaseEntityTest<Permission>
     {
-        private const long ValidUserEntity = 0L;
-        private const long ValidGuildEntity = 1L;
-        private const long ValidRoleEntity = 2L;
-        private const long ValidChannelEntity = 3L;
+        private const string PlatformId = "discord:0";
+        private const string ValidUserEntity = "0";
+        private const string ValidGuildEntity = "1";
+        private const string ValidRoleEntity = "2";
+        private const string ValidChannelEntity = "3";
 
         public PermissionServiceTests()
         {
@@ -24,7 +25,8 @@ namespace Miki.Framework.Tests.Commands.Permissions
                     EntityId = ValidUserEntity,
                     GuildId = ValidGuildEntity,
                     Status = PermissionStatus.Allow,
-                    Type = EntityType.User
+                    Type = EntityType.User,
+                    PlatformId = PlatformId
                 },
                 new Permission
                 {
@@ -32,7 +34,8 @@ namespace Miki.Framework.Tests.Commands.Permissions
                     EntityId = ValidChannelEntity,
                     GuildId = ValidGuildEntity,
                     Status = PermissionStatus.Default,
-                    Type = EntityType.Channel
+                    Type = EntityType.Channel,
+                    PlatformId = PlatformId
                 },
                 new Permission
                 {
@@ -40,7 +43,8 @@ namespace Miki.Framework.Tests.Commands.Permissions
                     EntityId = ValidGuildEntity,
                     GuildId = ValidGuildEntity,
                     Status = PermissionStatus.Allow,
-                    Type = EntityType.Guild
+                    Type = EntityType.Guild,
+                    PlatformId = PlatformId
                 },
                 new Permission
                 {
@@ -48,7 +52,8 @@ namespace Miki.Framework.Tests.Commands.Permissions
                     EntityId = ValidRoleEntity,
                     GuildId = ValidGuildEntity,
                     Status = PermissionStatus.Deny,
-                    Type = EntityType.Role
+                    Type = EntityType.Role,
+                    PlatformId = PlatformId
                 });
             ctx.SaveChanges();
         }
@@ -56,7 +61,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
         protected override void OnModelCreating(ModelBuilder builder)
         {   
             builder?.Entity<Permission>()
-                .HasKey(x => new {x.EntityId, x.CommandName, x.GuildId});
+                .HasKey(x => new {x.PlatformId, x.EntityId, x.CommandName, x.GuildId});
         }
 
         [Fact]
@@ -65,7 +70,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using var unit = NewContext();
             var service = new PermissionService(unit);
 
-            var permissions = await service.ListPermissionsAsync(ValidGuildEntity);
+            var permissions = await service.ListPermissionsAsync(PlatformId, ValidGuildEntity);
             Assert.Equal(4, permissions.Count);
         }
 
@@ -75,8 +80,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using var unit = NewContext();
             var service = new PermissionService(unit);
 
-            var bestPermission = await service.GetPriorityPermissionAsync(
-                    ValidGuildEntity, 
+            var bestPermission = await service.GetPriorityPermissionAsync(PlatformId, ValidGuildEntity, 
                     "test", 
                     new[] { ValidUserEntity, ValidGuildEntity, ValidRoleEntity })
                 .ConfigureAwait(false);
@@ -87,8 +91,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             Assert.Equal(ValidUserEntity, bestPermission.EntityId);
             Assert.Equal(ValidGuildEntity, bestPermission.GuildId);
 
-            bestPermission = await service.GetPriorityPermissionAsync(
-                    ValidGuildEntity,
+            bestPermission = await service.GetPriorityPermissionAsync(PlatformId, ValidGuildEntity,
                     "test",
                     new[] { ValidGuildEntity, ValidRoleEntity })
                 .ConfigureAwait(false);
@@ -99,8 +102,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             Assert.Equal(ValidRoleEntity, bestPermission.EntityId);
             Assert.Equal(ValidGuildEntity, bestPermission.GuildId);
 
-            bestPermission = await service.GetPriorityPermissionAsync(
-                    ValidGuildEntity,
+            bestPermission = await service.GetPriorityPermissionAsync(PlatformId, ValidGuildEntity,
                     "test",
                     new[] { ValidGuildEntity })
                 .ConfigureAwait(false);
@@ -115,9 +117,10 @@ namespace Miki.Framework.Tests.Commands.Permissions
         [Fact]
         public async Task SetPermissionTestAsync()
         {
-            long entityId = new Random().Next(int.MaxValue);
+            const string entityId = "new";
             var expectedPermission = new Permission
             {
+                PlatformId = PlatformId,
                 CommandName = "test",
                 EntityId = entityId,
                 GuildId = ValidGuildEntity,
@@ -128,8 +131,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using(var unit = NewContext())
             {
                 var service = new PermissionService(unit);
-                var permission = await service.GetPermissionAsync(
-                    entityId, expectedPermission.CommandName, ValidGuildEntity);
+                var permission = await service.GetPermissionAsync(PlatformId, entityId, expectedPermission.CommandName, ValidGuildEntity);
                 Assert.Null(permission);
 
                 await service.SetPermissionAsync(expectedPermission)
@@ -141,8 +143,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using(var unit = NewContext())
             {
                 var service = new PermissionService(unit);
-                var permission = await service.GetPermissionAsync(
-                    entityId, expectedPermission.CommandName, ValidGuildEntity);
+                var permission = await service.GetPermissionAsync(PlatformId, entityId, expectedPermission.CommandName, ValidGuildEntity);
                 Assert.Equal(expectedPermission, permission);
             }
         }
@@ -152,6 +153,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
         {
             var expectedPermission = new Permission
             {
+                PlatformId = PlatformId,
                 CommandName = "test",
                 EntityId = ValidUserEntity,
                 GuildId = ValidGuildEntity,
@@ -162,8 +164,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using(var unit = NewContext())
             {
                 var service = new PermissionService(unit);
-                var permission = await service.GetPermissionAsync(
-                    ValidUserEntity, expectedPermission.CommandName, ValidGuildEntity);
+                var permission = await service.GetPermissionAsync(PlatformId, ValidUserEntity, expectedPermission.CommandName, ValidGuildEntity);
                 Assert.NotNull(permission);
 
                 expectedPermission.Status = PermissionStatus.Deny;
@@ -176,8 +177,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             await using(var unit = NewContext())
             {
                 var service = new PermissionService(unit);
-                var permission = await service.GetPermissionAsync(
-                    ValidUserEntity, expectedPermission.CommandName, ValidGuildEntity);
+                var permission = await service.GetPermissionAsync(PlatformId, ValidUserEntity, expectedPermission.CommandName, ValidGuildEntity);
                 Assert.Equal(expectedPermission, permission);
             }
         }
@@ -191,6 +191,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
 
                 var deletedPermission = new Permission
                 {
+                    PlatformId = PlatformId,
                     CommandName = "test",
                     EntityId = ValidRoleEntity,
                     GuildId = ValidGuildEntity,
@@ -206,7 +207,7 @@ namespace Miki.Framework.Tests.Commands.Permissions
             {
                 var service = new PermissionService(context);
 
-                var permissions = await service.ListPermissionsAsync(ValidGuildEntity);
+                var permissions = await service.ListPermissionsAsync(PlatformId, ValidGuildEntity);
                 Assert.Equal(3, permissions.Count);
             }
         }

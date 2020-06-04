@@ -1,9 +1,10 @@
-﻿namespace Miki.Framework.Tests.Commands.Filters
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Tests.Commands.Filters
 {
     using System.Threading.Tasks;
     using Miki.Framework.Commands.Filters;
     using Moq;
-    using Miki.Discord.Common;
     using Xunit;
 
     public class BotFilterTests
@@ -32,16 +33,16 @@
 
         private IContext NewContext(bool val)
         {
-            var author = new Mock<IDiscordUser>();
+            var author = new Mock<IUser>();
             author.Setup(x => x.IsBot)
                 .Returns(val);
 
-            var message = new Mock<IDiscordMessage>();
-            message.Setup(x => x.Author)
-                .Returns(author.Object);
+            var message = new Mock<IMessage>();
+            message.Setup(x => x.GetAuthorAsync())
+                .Returns(Task.FromResult(author.Object));
 
             var context = new Mock<IContext>();
-            context.Setup(x => x.GetContext("framework-message"))
+            context.Setup(x => x.Message)
                 .Returns(message.Object);
 
             return context.Object;

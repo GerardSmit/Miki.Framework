@@ -9,9 +9,12 @@
 		public string Name { get; set; }
 
         [DataMember(Order = 2)]
-        public long ChannelId { get; set; }
+        public string ChannelId { get; set; }
 
         [DataMember(Order = 3)]
         public bool State { get; set; }
+
+        [DataMember(Order = 4)]
+        public string PlatformId { get; set; }
 	}
 }

@@ -9,8 +9,9 @@
 
     public class ScopeServiceTests : BaseEntityTest<Scope>
     {
+        private const string PlatformId = "discord:0";
         private const string ValidScope = "scope.testing";
-        private const long ValidId = 0L;
+        private const string ValidId = "0";
 
         public ScopeServiceTests()
         {
@@ -18,6 +19,7 @@
             context.Set<Scope>()
                 .Add(new Scope
                 {
+                    PlatformId = PlatformId,
                     ScopeId = ValidScope,
                     UserId = ValidId
                 });
@@ -27,7 +29,7 @@
         [Fact]
         public async Task AddScopeTestAsync()
         {
-            const long newId = 1L;
+            const string newId = "1";
             const string newScope = "scope.new";
 
             await using (var context = NewContext())
@@ -36,7 +38,8 @@
                 await service.AddScopeAsync(new Scope
                 {
                     UserId = newId,
-                    ScopeId = newScope
+                    ScopeId = newScope,
+                    PlatformId = PlatformId
                 });
                 await context.CommitAsync();
             }
@@ -44,20 +47,20 @@
             await using (var context = NewContext())
             {
                 var service = new ScopeService(context);
-                var result = await service.HasScopeAsync(newId, new [] {newScope});
+                var result = await service.HasScopeAsync(PlatformId, newId, new [] {newScope});
                 Assert.True(result);
             }
         }
 
         [Theory]
         [InlineData(ValidId, ValidScope, true)]
-        [InlineData(0L, "invalid.scope", false)]
-        public async Task HasScopeTestAsync(long id, string scope, bool expected)
+        [InlineData("0", "invalid.scope", false)]
+        public async Task HasScopeTestAsync(string id, string scope, bool expected)
         {
             await using var context = NewContext();
             var service = new ScopeService(context);
 
-            bool hasScope = await service.HasScopeAsync(id, new [] {scope});
+            bool hasScope = await service.HasScopeAsync(PlatformId, id, new [] {scope});
 
             Assert.Equal(expected, hasScope);
         }

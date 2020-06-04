@@ -1,4 +1,6 @@
-﻿namespace Miki.Framework
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework
 {
     using Microsoft.Extensions.DependencyInjection;
     using System;
@@ -12,12 +14,22 @@
 		/// <summary>
 		/// The command executed in this current session.
 		/// </summary>
-		IExecutable Executable { get; }
+		IExecutable Executable { get; set; }
+		
+		/// <summary>
+		/// The platform that created this context.
+		/// </summary>
+		IPlatform Platform { get; }
+		
+		/// <summary>
+		/// Incoming message.
+		/// </summary>
+		IMessage Message { get; }
 
 		/// <summary>
-		/// Services built in <see cref="MikiApp"/>
+		/// Current request services.
 		/// </summary>
-		IServiceProvider Services { get; }
+		IServiceProvider RequestServices { get; }
 
 		/// <summary>
 		/// Context objects are used for specific session-only objects that are added through pipeline
@@ -26,6 +38,8 @@
 		/// <param name="id"></param>
 		/// <returns></returns>
 		object GetContext(string id);
+		
+		void SetContext(string id, object value);
 
         /// <summary>
         /// Used to retrieve services built in <see cref="MikiApp"/>
@@ -33,28 +47,33 @@
 		object GetService(Type t);
 	}
 
-    /// <inheritdoc cref="IMutableContext" />
-    public class ContextObject : IMutableContext, IDisposable
+    /// <inheritdoc cref="IContext" />
+    public class ContextObject : IContext, IDisposable
 	{
 		private readonly Dictionary<string, object> contextObjects;
 		private readonly IServiceScope scope;
 
+		public IPlatform Platform => Message.Platform;
+		
+		public IMessage Message { get; }
+
 		/// <summary>
 		/// Service collection of the current context.
 		/// </summary>
-        public IServiceProvider Services
+        public IServiceProvider RequestServices
 			=> scope.ServiceProvider;
 
 		/// <summary>
 		/// Current set Executable.
 		/// </summary>
-		public IExecutable Executable { get; private set; }
+		public IExecutable Executable { get; set; }
 
 		/// <summary>
 		/// Creates a scoped context object
 		/// </summary>
-        public ContextObject(IServiceProvider p)
+        public ContextObject(IServiceProvider p, IMessage message)
 		{
+			Message = message;
 			contextObjects = new Dictionary<string, object>();
 			scope = p.CreateScope();
 		}

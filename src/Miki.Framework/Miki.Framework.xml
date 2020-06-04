@@ -82,7 +82,7 @@
             </summary>
         </member>
         <member name="T:Miki.Framework.ContextObject">
-            <inheritdoc cref="T:Miki.Framework.IMutableContext" />
+            <inheritdoc cref="T:Miki.Framework.IContext" />
         </member>
         <member name="P:Miki.Framework.ContextObject.Services">
             <summary>
@@ -158,9 +158,9 @@
             Generic version of <see cref="M:Miki.Framework.IContext.GetContext(System.String)"/>
             </summary>
         </member>
-        <member name="M:Miki.Framework.ContextExtensions.SetContext``1(Miki.Framework.IMutableContext,System.String,``0)">
+        <member name="M:Miki.Framework.ContextExtensions.SetContext``1(Miki.Framework.IContext,System.String,``0)">
             <summary>
-            Generic version of <see cref="M:Miki.Framework.IMutableContext.SetContext(System.String,System.Object)"/>
+            Generic version of <see cref="M:Miki.Framework.IContext.SetContext(System.String,System.Object)"/>
             </summary>
         </member>
         <member name="T:Miki.Framework.DiscordExtensions">
@@ -223,7 +223,7 @@
             request properly.</typeparam>
             <typeparam name="TResponse">Response object that handles </typeparam>
         </member>
-        <member name="T:Miki.Framework.IMutableContext">
+        <member name="T:Miki.Framework.IContext">
             <inheritdoc/>
         </member>
         <member name="T:Miki.Framework.IProvider">

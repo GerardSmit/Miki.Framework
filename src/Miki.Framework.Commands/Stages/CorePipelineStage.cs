@@ -1,6 +1,8 @@
-﻿namespace Miki.Framework.Commands
+﻿using System;
+using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using System;
     using System.Threading.Tasks;
@@ -13,7 +15,7 @@
 		public static string MessageContextKey = "framework-message";
 		public static string QueryContextKey = "framework-query";
 
-		public ValueTask CheckAsync(IDiscordMessage msg, IMutableContext e, Func<ValueTask> next)
+		public ValueTask CheckAsync(IMessage msg, IContext e, Func<ValueTask> next)
 		{
 			e.SetContext(MessageContextKey, msg);
 			e.SetContext(QueryContextKey, msg.Content);
@@ -25,13 +27,13 @@
 namespace Miki.Framework
 {
     using Commands;
-    using Discord.Common;
 
     public static class CorePipelineStageExtensions
     {
-		public static IDiscordMessage GetMessage(this IContext context)
+	    [Obsolete("Use IContext.Message instead")]
+		public static IMessage GetMessage(this IContext context)
 		{
-			return context.GetContext<IDiscordMessage>(CorePipelineStage.MessageContextKey);
+			return context.Message;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace Miki.Framework
         /// <summary>
         /// Sets the query.
         /// </summary>
-        public static void SetQuery(this IMutableContext context, string query)
+        public static void SetQuery(this IContext context, string query)
         {
             context.SetContext(CorePipelineStage.QueryContextKey, query);
         }

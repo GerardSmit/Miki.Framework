@@ -1,6 +1,7 @@
-﻿﻿namespace Miki.Framework.Commands.Permissions
+﻿﻿using Miki.Framework.Models;
+
+ namespace Miki.Framework.Commands.Permissions
  {
-     using Miki.Discord.Common;
      using Miki.Framework.Commands.Permissions.Attributes;
      using Miki.Framework.Commands.Permissions.Models;
      using Miki.Framework.Commands.Pipelines;
@@ -24,8 +25,7 @@
          }
 
          /// <inheritdoc/>
-         public async ValueTask CheckAsync(
-             IDiscordMessage data, [NotNull] IMutableContext e, [NotNull] Func<ValueTask> next)
+         public async ValueTask CheckAsync(IMessage data, [NotNull] IContext e, [NotNull] Func<ValueTask> next)
          {
              if(e?.Executable == null)
              {
@@ -33,8 +33,8 @@
                  return;
              }
 
-             var message = e.GetMessage();
-             if(message.Author is IDiscordGuildUser)
+             var user = await e.Message.GetAuthorAsync().ConfigureAwait(false);
+             if (user is IGuildUser guildUser)
              {
                  var permission = await service.GetPriorityPermissionAsync(e);
                  if(permission == null)
@@ -42,9 +42,10 @@
                      var defaultStatus = FetchPermissionStatusFrom(e.Executable);
                      permission = new Permission
                      {
-                         GuildId = (long) e.GetGuild().Id,
+                         GuildId = guildUser.GuildId,
+                         PlatformId = guildUser.Platform.Id,
                          CommandName = e.Executable.ToString(),
-                         EntityId = 0,
+                         EntityId = string.Empty,
                          Status = defaultStatus,
                          Type = 0
                      };

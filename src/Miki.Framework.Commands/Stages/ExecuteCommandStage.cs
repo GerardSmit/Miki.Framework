@@ -1,8 +1,9 @@
-﻿namespace Miki.Framework.Commands.Stages
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Stages
 {
     using System;
     using System.Threading.Tasks;
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using Miki.Logging;
 
@@ -15,7 +16,7 @@
             this.map = map ?? throw new ArgumentNullException(nameof(map));
         }
 
-        public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
         {
             Log.Debug($"Starting command aggregation with query '{e.GetQuery()}'");
 
@@ -28,7 +29,7 @@
 
             if(command is IExecutable exec)
             {
-                e.SetExecutable(exec);
+                e.Executable = exec;
                 await next();
             }
         }

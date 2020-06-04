@@ -27,9 +27,9 @@
         }
 
         /// <summary>
-        /// Generic version of <see cref="IMutableContext.SetContext(string, object)"/>
+        /// Generic version of <see cref="IContext.SetContext(string, object)"/>
         /// </summary>
-        public static void SetContext<T>(this IMutableContext context, string key, T value)
+        public static void SetContext<T>(this IContext context, string key, T value)
         {
             context.SetContext(key, value);
         }

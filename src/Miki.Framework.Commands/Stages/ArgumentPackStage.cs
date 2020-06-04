@@ -1,6 +1,7 @@
-﻿namespace Miki.Framework.Commands.Pipelines
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Pipelines
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Arguments;
     using System;
     using System.Linq;
@@ -32,8 +33,7 @@
 		}
 
 		/// <inheritdoc/>
-		public async ValueTask CheckAsync(
-            IDiscordMessage message, IMutableContext e, Func<ValueTask> next)
+		public async ValueTask CheckAsync(IMessage message, IContext e, Func<ValueTask> next)
 		{
 			e.SetContext<ITypedArgumentPack>(
 				ArgumentKey,

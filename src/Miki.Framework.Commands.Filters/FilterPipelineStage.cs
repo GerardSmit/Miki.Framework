@@ -1,6 +1,7 @@
-﻿namespace Miki.Framework.Commands.Filters
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Filters
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using System;
     using System.Collections.Generic;
@@ -26,11 +27,11 @@
 			return filters.OfType<T>().FirstOrDefault();
 		}
 
-		public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+		public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
 		{
 			foreach(var f in filters)
 			{
-				if(!await f.CheckAsync(e))
+				if (!await f.CheckAsync(e))
 				{
 					return;
 				}

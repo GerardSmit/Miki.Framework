@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Miki.Framework.Commands.Filters\Miki.Framework.Commands.Filters.csproj" />
+      <ProjectReference Include="..\Miki.Framework.Commands.Prefixes\Miki.Framework.Commands.Prefixes.csproj" />
+      <ProjectReference Include="..\Miki.Framework.Commands\Miki.Framework.Commands.csproj" />
+      <ProjectReference Include="..\Miki.Framework.Discord\Miki.Framework.Discord.csproj" />
+      <ProjectReference Include="..\Miki.Framework\Miki.Framework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Miki.Cache.InMemory" Version="1.5.0" />
+      <PackageReference Include="Miki.Serialization.MsgPack" Version="1.0.0" />
+    </ItemGroup>
+
+</Project>

@@ -35,36 +35,41 @@
     [DataContract]
 	public class Permission
 	{
+        [DataMember(Name = "platform_id", Order = 1)]
+        [Column]
+        [Key]
+        public string PlatformId { get; set; }
+        
         /// <summary>
         /// The Entity ID of the permission, use <see cref="Type"/> to find out to which repository it
         /// relates to.
         /// </summary>
-        [DataMember(Name = "entity_id", Order = 1)]
+        [DataMember(Name = "entity_id", Order = 2)]
         [Column]
         [Key]
-		public long EntityId { get; set; }
+		public string EntityId { get; set; }
 
-        [DataMember(Name = "command_name", Order = 2)]
+        [DataMember(Name = "command_name", Order = 3)]
         [Column]
         [Key]
         public string CommandName { get; set; }
 
-        [DataMember(Name = "guild_id", Order = 3)]
+        [DataMember(Name = "guild_id", Order = 4)]
         [Column]
         [Key]
-        public long GuildId { get; set; }
+        public string GuildId { get; set; }
 
-        [DataMember(Name = "entity_type", Order = 4)]
+        [DataMember(Name = "entity_type", Order = 5)]
         [Column]
 		public EntityType Type { get; set; }
 
         /// <summary>
         /// The current permission of the entity.
         /// </summary>
-        [DataMember(Name = "status", Order = 5)]
+        [DataMember(Name = "status", Order = 6)]
         [Column]
         public PermissionStatus Status { get; set; }
-
+        
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {

@@ -7,12 +7,16 @@
     [DataContract]
 	public class Scope
 	{
-        [Column("UserId")]
+		[Column("UserId")]
         [DataMember(Name = "user_id", Order = 1)]
-		public long UserId { get; set; }
+		public string UserId { get; set; }
 
         [Column("ScopeId")]
         [DataMember(Name = "scope_id", Order = 2)]
         public string ScopeId { get; set; }
+        
+        [Column("PlatformId")]
+        [DataMember(Name = "platform_id", Order = 3)]
+        public string PlatformId { get; set; }
 	}
 }

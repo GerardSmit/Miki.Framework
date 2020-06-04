@@ -1,7 +1,8 @@
 ﻿
+using Miki.Framework.Models;
+
 namespace Miki.Framework.Commands.Scopes
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
     using Miki.Framework.Commands.Scopes.Attributes;
     using Miki.Logging;
@@ -18,7 +19,7 @@ namespace Miki.Framework.Commands.Scopes
             this.service = service;
         }
 
-        public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
         {
             if(e.Executable == null)
             {
@@ -37,8 +38,8 @@ namespace Miki.Framework.Commands.Scopes
                 .Select(x => x.ScopeId)
                 .ToList();
 
-            var scopesGranted = await service.HasScopeAsync(
-                    (long)e.GetMessage().Author.Id, scopesRequired)
+            var author = await e.Message.GetAuthorAsync();
+            var scopesGranted = await service.HasScopeAsync(author, scopesRequired)
                 .ConfigureAwait(false);
 
             if(!scopesGranted)

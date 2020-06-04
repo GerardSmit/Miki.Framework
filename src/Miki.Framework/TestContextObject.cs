@@ -1,4 +1,6 @@
-﻿namespace Miki.Framework
+﻿using Miki.Framework.Models;
+
+namespace Miki.Framework
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +8,7 @@
     /// <summary>
     /// Context object usable for testing. Avoids having to mock a lot of context related fetching.
     /// </summary>
-    public class TestContextObject : IMutableContext
+    public class TestContextObject : IContext
     {
         private readonly Dictionary<string, object> contextObjects = new Dictionary<string, object>();
         private readonly Dictionary<Type, object> serviceObjects = new Dictionary<Type, object>();
@@ -14,8 +16,13 @@
         /// <inheritdoc />
         public IExecutable Executable { get; set; }
 
+        public IPlatform Platform => Message.Platform;
+
         /// <inheritdoc />
-        public IServiceProvider Services { get; set; }
+        public IMessage Message { get; set; }
+
+        /// <inheritdoc />
+        public IServiceProvider RequestServices { get; set; }
 
         /// <inheritdoc />
         public object GetContext(string id)

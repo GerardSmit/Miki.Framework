@@ -43,13 +43,4 @@
             return new ValueTask<IEnumerable<T>>(context.Set<T>());
         }
     }
-
-    public class EntityRepositoryFactory<T> : IRepositoryFactory<T>
-        where T : class
-    {
-        public IAsyncRepository<T> Build(DbContext context)
-        {
-            return new EntityRepository<T>(context);
-        }
-    }
 }

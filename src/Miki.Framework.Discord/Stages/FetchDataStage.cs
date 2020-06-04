@@ -1,8 +1,10 @@
-﻿namespace Miki.Framework.Commands.Stages
+﻿using Miki.Discord.Common;
+using Miki.Framework.Models;
+
+namespace Miki.Framework.Commands.Stages
 {
     using System;
     using System.Threading.Tasks;
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Pipelines;
 
     public class FetchDataStage : IPipelineStage
@@ -10,9 +12,9 @@
         public static string ChannelArgumentKey = "framework-channel";
         public static string GuildArgumentKey = "framework-guild";
 
-        public async ValueTask CheckAsync(IDiscordMessage data, IMutableContext e, Func<ValueTask> next)
+        public async ValueTask CheckAsync(IMessage data, IContext e, Func<ValueTask> next)
         {
-            var channel = await e.GetMessage().GetChannelAsync();
+            var channel = await e.Message.GetChannelAsync();
             if(channel == null)
             {
                 throw new InvalidOperationException("This channel is not supported");
@@ -29,7 +31,6 @@
 
 namespace Miki.Framework
 {
-    using Miki.Discord.Common;
     using Miki.Framework.Commands.Stages;
 
     public static class FetchDataStageExtensions

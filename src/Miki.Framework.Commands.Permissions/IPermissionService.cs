@@ -23,23 +23,25 @@
         /// <summary>
         /// Gets the specified permission if exists.
         /// </summary>
+        /// <param name="platformId"></param>
         /// <param name="entityId">ID of the entity, these can be users, roles, channels, etc.</param>
         /// <param name="commandName">Name of the IExecutable you want to apply this permission for.
         /// </param>
         /// <param name="guildId">Id of the server to apply this permission to.</param>
-        ValueTask<Permission> GetPermissionAsync(long entityId, string commandName, long guildId);
+        ValueTask<Permission> GetPermissionAsync(string platformId, string entityId, string commandName, string guildId);
 
         /// <summary>
         /// Gets the top priority permission, can only be of type <see cref="PermissionStatus.Allow"/>
         /// and <see cref="PermissionStatus.Deny"/>. People with a special Administrator flag get to go
         /// through always.
         /// </summary>
-        /// <param name="entityIds">All entity Ids whitelisted for this permission check.</param>
+        /// <param name="platformId"></param>
+        /// <param name="guildId">Id of the server to apply this permission to.</param>
         /// <param name="commandName">Name of the IExecutable you want to apply this permission for.
         /// </param>
-        /// <param name="guildId">Id of the server to apply this permission to.</param>
-        ValueTask<Permission> GetPriorityPermissionAsync(
-            long guildId, string commandName, long[] entityIds);
+        /// <param name="entityIds">All entity Ids whitelisted for this permission check.</param>
+        ValueTask<Permission> GetPriorityPermissionAsync(string platformId, string guildId, string commandName,
+            string[] entityIds);
 
         /// <summary>
         /// Gets the top priority permission, can only be of type <see cref="PermissionStatus.Allow"/>
@@ -52,27 +54,30 @@
         /// <summary>
         /// Lists all permissions set for a single guild.
         /// </summary>
+        /// <param name="platformId"></param>
         /// <param name="guildId">Guild that you want to see all permissions of.</param>
-        ValueTask<IReadOnlyList<Permission>> ListPermissionsAsync(long guildId);
+        ValueTask<IReadOnlyList<Permission>> ListPermissionsAsync(string platformId, string guildId);
 
         /// <summary>
         /// A guild-based permission list with additional specification filter to it. 
         /// </summary>
+        /// <param name="platformId"></param>
         /// <param name="guildId">Guild that you want to see all permissions of.</param>
         /// <param name="entityFilter">All entity Ids whitelisted for this permission check.</param>
-        public ValueTask<List<Permission>> ListPermissionsAsync(
-            long guildId, params long[] entityFilter);
+        public ValueTask<List<Permission>> ListPermissionsAsync(string platformId, string guildId,
+            params string[] entityFilter);
 
         /// <summary>
         /// A more specific version to list all permissions. Can be used to specify to which entities
         /// you would like to see permissions of.
         /// </summary>
+        /// <param name="platformId"></param>
         /// <param name="guildId">Guild that you want to see all permissions of.</param>
         /// <param name="commandName">Name of the IExecutable you want to apply this permission for.
         /// </param>
         /// <param name="entityFilter">All entity Ids whitelisted for this permission check.</param>
-        ValueTask<IReadOnlyList<Permission>> ListPermissionsAsync(
-            long guildId, string commandName, params long[] entityFilter);
+        ValueTask<IReadOnlyList<Permission>> ListPermissionsAsync(string platformId, string guildId, string commandName,
+            params string[] entityFilter);
 
         /// <summary>
         /// Sets or Creates a new permission.
